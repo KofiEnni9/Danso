@@ -3,4 +3,4 @@ This is the platform we are working on to allow students from every part of the 
 
 libraries used
 -streamlit -requests
--google-api-python-client -google-auth-httplib2 -google-auth-oauthlib -pandas -openpyxl
+-pandas -openpyxl

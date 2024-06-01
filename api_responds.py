@@ -1,6 +1,14 @@
 import streamlit as st
 import requests
-    
+import os
+from dotenv import load_dotenv
+from huggingface_hub import HfApi
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Access the API token from environment variable
+hf_token = os.getenv('HUGGINGFACE_TOKEN')    
 
 # Constants
 API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
@@ -8,7 +16,7 @@ API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Inst
 # Function to query the Mistral API
 def query_mistral_api(prompt):
     headers = {
-        "Authorization": f"Bearer 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"
+        "Authorization": f"Bearer {hf_token}"
     }
     payload = {
         "inputs": prompt

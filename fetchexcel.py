@@ -1,3 +1,9 @@
+## this will handle access the past questions data
+## the purpose of this code is to access the specific google sheet/year we want to use
+## At the buttom u can see variables that latter on we can manipulate for other files 
+## to access specific content
+
+
 import os
 import pandas as pd
 import gspread
@@ -6,6 +12,8 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 from oauth2client.service_account import ServiceAccountCredentials
 import io
+
+
 
 # Path to service account key file
 SERVICE_ACCOUNT_FILE = './sublime-command-414712.json'

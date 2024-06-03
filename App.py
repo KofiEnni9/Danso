@@ -3,46 +3,24 @@ import streamlit as st
 # Set the page layout
 st.set_page_config(layout="centered")
 
-# Custom CSS for styling the container and buttons
-st.markdown(
-    """
-    <style>
-    .blue-container {
-        background-color: #cce7ff;
-        padding: 50px;
-        border-radius: 10px;
-        width: 80%;
-        margin: auto;
-    }
-    .button {
-        width: 200px;
-        height: 50px;
-        font-size: 20px;,
-        margin: 10px;
-        border-radius: 5px;
-    }
-    </style>
-    """, 
-    unsafe_allow_html=True
-)
-
 # Create a container for the buttons
-st.markdown('<div class="blue-container">', unsafe_allow_html=True)
+container = st.container()
 
 # Define the columns layout
-col1, col2 = st.columns(2)
+col1, col2 = container.columns([1, 1])
 
 # First row of buttons
 with col1:
-    st.markdown('<button class="button">self paced quiz button</button>', unsafe_allow_html=True)
+    st.button("self paced quiz button")
 with col2:
-    st.markdown('<button class="button">learn button</button>', unsafe_allow_html=True)
+    st.button("learn button")
 
 # Second row of buttons
 with col1:
-    st.markdown('<button class="button">pop quiz button</button>', unsafe_allow_html=True)
+    st.button("pop quiz button")
 with col2:
-    st.markdown('<button class="button">full quiz button</button>', unsafe_allow_html=True)
+    st.button("full quiz button")
 
-# Close the container div
-st.markdown('</div>', unsafe_allow_html=True)
+tab1, tab2 = st.tabs(["Tab 1", "Tab2"])
+tab1.write("this is tab 1")
+tab2.write("this is tab 2")

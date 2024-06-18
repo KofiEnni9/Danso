@@ -1,102 +1,92 @@
-## this will handle access the past questions data
-## the purpose of this code is to access the specific google sheet/year we want to use
-## At the buttom u can see variables that latter on we can manipulate for other files 
-## to access specific content
+
+# from google.colab import drive
+# drive.mount('/content/drive')
+
+# !pip install -q gspread oauth2client
+
+# from oauth2client.service_account import ServiceAccountCredentials
+# import gspread
+# from googleapiclient.discovery import build
+# from google.colab import auth
+# import pandas as pd
 
 
-import os
-import pandas as pd
-import gspread
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseDownload
-from oauth2client.service_account import ServiceAccountCredentials
-import io
+# # Authenticate and create the PyDrive client
+# auth.authenticate_user()
+
+# # Path to service account key file
+# SERVICE_ACCOUNT_FILE = '/content/drive/My Drive/secrets/sublime-command-414712.json'
+
+# # Define the scopes
+# SCOPES = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+
+# # Authenticate using a service account
+# credentials = ServiceAccountCredentials.from_json_keyfile_name(SERVICE_ACCOUNT_FILE, SCOPES)
+# gc = gspread.authorize(credentials)
+# drive_service = build('drive', 'v3', credentials=credentials)
+
+# # folder IDs for the years to access
+# folder_ids = {
+#     '2016': '1EL42UWE11bass0yMDz6eIE4vOweX5uXl',
+#     '2017': '11scjTp305ltJL96YV5e1IvAFB1LONvDJ',
+#     '2018': '1p7y6Q7GxCaRUmmdNVA58VdgS3T55jD8G',
+#     '2019': '1wuVYGil8TJ13qiewT21JfkaWVqctqpXT',
+#     '2020': '1eo2k0KJwyyVYVjwH2kJaKZsItIZis0EL',
+#     '2021': '199X5s1oNKoREjNrZup0ivk7SAtDPaMwN',
+# }
+
+# all_sheets_df = []
+
+# import time
 
 
+# for year, folder_id in folder_ids.items():
+#     # List all .xlsx files in the specified folder
+#     query = f"'{folder_id}' in parents and mimeType='application/vnd.google-apps.spreadsheet'"
+#     results = drive_service.files().list(q=query).execute()
+#     items = results.get('files', [])
 
-# Path to service account key file
-SERVICE_ACCOUNT_FILE = './sublime-command-414712.json'
+#     if not items:
+#         print(f'No files found in the {year} folder.')
+#     else:
+#         print(f"Found {len(items)} files in the {year} folder.")
 
-# Define the scopes
-SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
+#     for item in items:
+#         file_id = item['id']
+#         file_name = item['name']
+#         try:
+#             sheet = gc.open_by_key(file_id)
 
-# Define the base directory where the folders and files are stored
-base_dir = 'NSMQ Past Questions/NSMQ QUESTIONS SPREADSHEETS'
+#             for worksheet in sheet.worksheets():
+#                 worksheet_title = worksheet.title
+#                 data = worksheet.get_all_values()
 
-def authenticate_service_account():
-    """Authenticate using a service account."""
-    try:
-        credentials = service_account.Credentials.from_service_account_file(
-            SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-        drive_service = build('drive', 'v3', credentials=credentials)
+#                 # Convert data to a DataFrame
+#                 df = pd.DataFrame(data)
 
-        gspread_credentials = ServiceAccountCredentials.from_json_keyfile_name(SERVICE_ACCOUNT_FILE, SCOPES)
-        gspread_client = gspread.authorize(gspread_credentials)
-        
-        return drive_service, gspread_client
-    except Exception as e:
-        print(f"Error during authentication: {e}")
-        return None
+#                 # Set the first row as headers if necessary
+#                 df.columns = df.iloc[0]
+#                 df = df[1:]
 
+#                 # Drop the specified columns
+#                 columns_to_remove = ["Answer has a figure", "Has Preamble", "calculations present"]
+#                 df = df.drop(columns=[col for col in columns_to_remove if col in df.columns])
 
+#                 df['Quiz Round'] = worksheet_title
+#                 df['Year_Round'] = file_name
 
-def get_file(service, folder_path, contestNO):
-    # Split the folder_path into individual folder names
-    parts = folder_path.split('/')
-    folder_names = parts
-    
-    # Start with the specified parent_id
-    parent_id = '1YRtrllvZwmpADMW22jEfBnYucGV7eBsu'
-    
-    # Traverse the folder structure to get to the target folder
-    for folder_name in folder_names:
-        query = f"'{parent_id}' in parents and name = '{folder_name}' and mimeType = 'application/vnd.google-apps.folder'"
-        results = service.files().list(q=query, spaces='drive', fields='files(id, name)').execute()
-        folders = results.get('files', [])
-        
-        if not folders:
-            raise FileNotFoundError(f"Folder '{folder_name}' not found")
-        
-        # Assuming there's only one folder with the given name
-        parent_id = folders[0]['id']
-    
-    # Query to find the specific file within the final folder
-    query = f"'{parent_id}' in parents and name = '{contestNO}' and mimeType = 'application/vnd.google-apps.spreadsheet'"
-    results = service.files().list(q=query, spaces='drive', fields='files(id, name, mimeType)').execute()
-    
-    # Retrieve the list of files
-    files = results.get('files', [])
-    
-    if not files:
-        raise FileNotFoundError(f"File '{contestNO}' not found in folder '{folder_names[-1]}'")
-    
-    # Assuming there's only one file with the given name
-    return files[0]
+#                 all_sheets_df.append(df)
 
-def read_google_sheet(sheet_id, sheet_name, gspread_client):
-    sheet = gspread_client.open_by_key(sheet_id).worksheet(sheet_name)
-    data = sheet.get_all_records()
-    return pd.DataFrame(data)
+#                 time.sleep(2)
 
-def main():
-    drive_service, gspread_client = authenticate_service_account()
-    folder_name = "2016"             
-    contestNum = "2"  
-    contestNO = f"{folder_name} NSMQ contest {contestNum}" 
-    sheet_name = 'Round 1'
+#         except Exception as e:
+#             print(f"Failed to read file {file_name} with id {file_id}: {e}")
 
-    search_term = "Chemistry"   
+# # Combine all dataframes into one
+# combined_df = pd.concat(all_sheets_df, ignore_index=True)
 
-    if drive_service and gspread_client:
-        file = get_file(drive_service, folder_name, contestNO)
-        file_id = file['id']
-        
-        df = read_google_sheet(file_id, sheet_name, gspread_client)
-        print(df)
-    else:
-        print("Failed to authenticate service account.")
+# # Save the combined dataframe to a CSV file
+# csv_filename = '/content/combined_sheets.csv'
+# combined_df.to_csv(csv_filename, index=False)
 
-
-if __name__ == '__main__':
-    main()
+# print(f"Combined CSV file created at: {csv_filename}")

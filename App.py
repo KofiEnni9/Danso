@@ -77,7 +77,7 @@ def chat_page():
             display_message(msg.payload, "user-message")
 
     # Get the user input
-    prompt: str = st.chat_input("Begin your prompt with ""\"" " if you want to retrive NSMQ questions")
+    prompt: str = st.chat_input("Begin your prompt with ""&"" if you want to retrive NSMQ questions")
 
     # If the user has entered a prompt, process it
     if prompt:

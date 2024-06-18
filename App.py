@@ -7,7 +7,7 @@ import requests
 import re
 
 # Replace <random-id> with your actual ngrok ID
-base_url = "https://bf56-34-23-6-208.ngrok-free.app"
+base_url = "https://a2e0-34-125-236-111.ngrok-free.app"
 
 
 @dataclass
@@ -77,7 +77,7 @@ def chat_page():
             display_message(msg.payload, "user-message")
 
     # Get the user input
-    prompt: str = st.chat_input("Enter a prompt here")
+    prompt: str = st.chat_input("Begin your prompt with ""/"" if you want to retrive NSMQ questions")
 
     # If the user has entered a prompt, process it
     if prompt:

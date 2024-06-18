@@ -1,53 +1,5 @@
-# import streamlit as st
-# import time
 
-# def circular_countdown(target_time):
-#     """
-#     Creates a circular countdown timer in Streamlit.
 
-#     Args:
-#         target_time: The target time in seconds for the countdown.
-#     """
-#     start_time = time.time()
-#     remaining_time = target_time
-
-#     countdown_placeholder = st.empty()
-    
-#     while remaining_time > 0:
-#         # Update remaining time
-#         elapsed_time = time.time() - start_time
-#         remaining_time = target_time - elapsed_time
-
-#         # Calculate progress for circle animation
-#         progress = (target_time - remaining_time) / target_time
-
-#         # Create layout for countdown
-#         with countdown_placeholder.container():
-#             col1, col2 = st.columns(2)
-#             with col1:
-#                 st.write(f"Time Remaining: {int(remaining_time)} seconds")
-#             with col2:
-#                 # Add circle element using progress for animation
-#                 st.write(f"""
-#                 <svg width="100" height="100">
-#                     <circle cx="50" cy="50" r="40" stroke="#0000ff" stroke-width="8" fill="none" />
-#                     <circle cx="50" cy="50" r="40" stroke="#ffffff" stroke-width="8" stroke-dasharray="251.2 251.2"
-#                             stroke-dashoffset="{251.2 - (progress * 251.2)}" />
-#                     <text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="20" fill="#ff0080">{int(remaining_time)}</text>
-#                 </svg>
-#                 """, unsafe_allow_html=True)
-
-#         # Update progress and sleep for smoother animation
-#         time.sleep(0.1)
-
-#     countdown_placeholder.empty()
-
-# # User input for countdown time
-# countdown_time = 5
-
-# # Start countdown on button click
-# if st.button("Start Countdown"):
-#     circular_countdown(countdown_time)
 from dataclasses import dataclass
 import streamlit as st
 import time
@@ -159,6 +111,57 @@ def chat_page():
         
         with st.chat_message(name=ASSISTANT, avatar="bot_image.png"):
             st.write(response)
+
+
+def circular_countdown(target_time):
+    """
+    Creates a circular countdown timer in Streamlit.
+
+    Args:
+        target_time: The target time in seconds for the countdown.
+    """
+    start_time = time.time()
+    remaining_time = target_time
+
+    countdown_placeholder = st.empty()
+    
+    while remaining_time > 0:
+        # Update remaining time
+        elapsed_time = time.time() - start_time
+        remaining_time = target_time - elapsed_time
+
+        # Calculate progress for circle animation
+        progress = (target_time - remaining_time) / target_time
+
+        # Create layout for countdown
+        with countdown_placeholder.container():
+            col1, col2 = st.columns(2)
+            with col1:
+                st.write(f"Time Remaining: {int(remaining_time)} seconds")
+            with col2:
+                # Add circle element using progress for animation
+                st.write(f"""
+                <svg width="100" height="100">
+                    <circle cx="50" cy="50" r="40" stroke="#0000ff" stroke-width="8" fill="none" />
+                    <circle cx="50" cy="50" r="40" stroke="#ffffff" stroke-width="8" stroke-dasharray="251.2 251.2"
+                            stroke-dashoffset="{251.2 - (progress * 251.2)}" />
+                    <text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="20" fill="#ff0080">{int(remaining_time)}</text>
+                </svg>
+                """, unsafe_allow_html=True)
+
+        # Update progress and sleep for smoother animation
+        time.sleep(0.1)
+
+    countdown_placeholder.empty()
+
+# User input for countdown time
+countdown_time = 5
+
+# Start countdown on button click
+if st.button("Start Countdown"):
+    circular_countdown(countdown_time)
+
+
 
 # Sidebar with navigation
 st.sidebar.title("Navigation")

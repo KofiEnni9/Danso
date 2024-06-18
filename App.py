@@ -4,9 +4,10 @@ from dataclasses import dataclass
 import streamlit as st
 import time
 import requests
+import re
 
 # Replace <random-id> with your actual ngrok ID
-base_url = "https://82ec-34-143-177-2.ngrok-free.app"
+base_url = "https://bf56-34-23-6-208.ngrok-free.app"
 
 
 @dataclass
@@ -26,13 +27,12 @@ def initialize_session_state():
 
 # Generate a response from the assistant
 def generate_response(user_input: str) -> str:
-
-    prompt = {user_input}
-    response = requests.get(f"{base_url}/gen_llm/{prompt}")
-
-    # Here you can implement the logic for generating a response from the assistant.
-    # For simplicity, we return a fixed response.
-    return response
+    try:
+        response = requests.get(f"{base_url}/gen_llm/{user_input}")
+        response.raise_for_status()
+        return response.text
+    except requests.exceptions.RequestException as e:
+        return f"Error: {e}"
 
 # Display message function
 def display_message(message: str, message_type: str):

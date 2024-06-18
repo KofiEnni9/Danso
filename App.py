@@ -7,7 +7,7 @@ import requests
 import re
 
 # Replace <random-id> with your actual ngrok ID
-base_url = "https://5489-34-125-236-111.ngrok-free.app"
+base_url = "https://40d9-34-125-236-111.ngrok-free.app"
 
 
 @dataclass

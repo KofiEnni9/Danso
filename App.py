@@ -6,7 +6,6 @@ import time
 import requests
 import re
 
-# Replace <random-id> with your actual ngrok ID
 base_url = "https://f92b-34-125-236-111.ngrok-free.app"
 
 
@@ -25,7 +24,6 @@ def initialize_session_state():
     if MESSAGES not in st.session_state:
         st.session_state[MESSAGES] = [Message(actor=ASSISTANT, payload="Hi! How can I help you?")]
 
-# Generate a response from the assistant
 def generate_response(user_input: str) -> str:
     try:
         response = requests.get(f"{base_url}/gen_llm/{user_input}")
@@ -34,7 +32,6 @@ def generate_response(user_input: str) -> str:
     except requests.exceptions.RequestException as e:
         return f"Error: {e}"
 
-# Display message function
 def display_message(message: str, message_type: str):
     placeholder = st.empty()
     if message_type == "user-message":
@@ -46,12 +43,10 @@ def display_message(message: str, message_type: str):
     placeholder.markdown(message_content, unsafe_allow_html=True)
     time.sleep(1)
 
-# Page functions
 def chat_page():
     # Initialize the session state
     initialize_session_state()
 
-    # Custom CSS for user messages
     st.markdown("""
         <style>
         .user-message {
